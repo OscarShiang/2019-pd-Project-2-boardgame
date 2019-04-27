@@ -24,7 +24,7 @@ Tile::Tile(int color_code) {
     outline = new QGraphicsRectItem();
     outline->setRect(qreal(width / 2) - qreal(55 / 2), qreal(length / 2) - qreal(55 / 2), 55, 55);
     outline->setBrush(Qt::transparent);
-
+    // draw the outline
     QPen pen;
     pen.setWidth(3);
     pen.setColor((color_code)? Qt::white : QColor(132, 88, 75));
@@ -32,7 +32,8 @@ Tile::Tile(int color_code) {
 
     outline->hide();
 
-    pic = new QGraphicsPixmapItem();
+    pic = new Animate();
+    animate = new QPropertyAnimation(pic, "pos");
 
     // add the element into group
     addToGroup(rect);
@@ -57,44 +58,14 @@ void Tile::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
     rect->setBrush(color);
 }
 
-void Tile::setKind(QString ipt) {
-    kind = ipt[1];
-    side = ipt[0];
-    if (ipt == "") {
-        pic->hide();
-        return;
-    }
-
-    QPixmap src;
-    QString piece;
-    if (kind == "p")
-        piece = "pawn";
-    else if (kind == "r")
-        piece = "rock";
-    else if (kind == "n")
-        piece = "knight";
-    else if (kind == "b")
-        piece = "bishop";
-    else if (kind == "k")
-        piece = "king";
-    else if (kind == "q")
-        piece = "queen";
-
-    if (side == "b")
-        src.load(":/pic/black/" + piece +".svg");
-    else if (side == "w")
-        src.load(":/pic/white/" + piece +".svg");
-
-    pic->show();
-
-    src = src.scaledToHeight(45, Qt::FastTransformation);
-    pic->setPixmap(src);
-    pic->setPos(width / 2 - qreal(src.width() / 2), length / 2 - qreal(src.height() / 2));
+void Tile::setKind(QString type) {
+    pic->setKind(type);
+    pic->setPos(width / 2 - qreal(pic->src.width() / 2), length / 2 - qreal(pic->src.height() / 2));
 }
 
-QPoint Tile::getPos() {
-    return pos;
-}
+//QPoint Tile::getPos() {
+//    return pos;
+//}
 
 void Tile::setRemind(bool ipt) {
     if (ipt)
@@ -102,4 +73,20 @@ void Tile::setRemind(bool ipt) {
     else {
         outline->hide();
     }
+}
+
+void Tile::focus(bool ipt) {
+    animate->setDuration(150);
+    animate->setStartValue(pic->pos());
+    if (ipt) {
+        animate->setEndValue(QPointF(width / 2 - qreal(pic->src.width() / 2), length / 2 - qreal(pic->src.height() / 2) - 5));
+    }
+    else {
+        animate->setEndValue(QPointF(width / 2 - qreal(pic->src.width() / 2), length / 2 - qreal(pic->src.height() / 2) ));
+    }
+    animate->start();
+}
+
+QPointF Tile::getPicPos() {
+    return pic->pos();
 }

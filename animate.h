@@ -7,20 +7,17 @@
 
 class Animate: public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
-    Q_PROPERTY(QPointF loc READ loc WRITE setLoc)
+    Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 public:
     void setKind(QString type);
-    void setLoc(QPointF pos);
-    QPointF loc();
+    QPointF getPicSize();
+
+    QPixmap src;
+    const int length = 70;
+    const QPoint lengthF = QPoint(70, 70);
 
 public slots:
     void finish();
-
-private:
-    QPixmap src;
-    QPointF location;
-    const int width = 70;
-    const int length = 70;
 };
 
 #endif // ANIMATE_H

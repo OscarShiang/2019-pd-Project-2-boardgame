@@ -18,7 +18,7 @@ Game::Game() {
     // create animation object
     anime = new Animate();
     anime->hide();
-    animation = new QPropertyAnimation(anime, "loc");
+    animation = new QPropertyAnimation(anime, "pos");
 
     // create the board
     makeBoard();
@@ -92,6 +92,7 @@ void Game::mousePressed(QPoint pos) {
             return;
 
         focusChess = pos;
+        tile[pos.x()][pos.y()]->focus(true);
 
 //        qDebug() << "START can move list";
 //        for (int i = 0; i < possibleList.size(); i ++) {
@@ -104,13 +105,15 @@ void Game::mousePressed(QPoint pos) {
         qDebug() << "set focus";
     }
     else if (focusChess == pos || !isValid(pos)) {
-        focusChess = UNFOCUS;
+        tile[focusChess.x()][focusChess.y()]->focus(false);
         setRemind(false);
+        focusChess = UNFOCUS;
         possibleList.clear();
         qDebug() << "release focus";
     }
     else if (isValid(pos)) {
         qDebug() << "move chess";
+        tile[focusChess.x()][focusChess.y()]->focus(false);
         moveChess(focusChess, pos);
         possibleList.clear();
         focusChess = UNFOCUS;
@@ -127,9 +130,9 @@ void Game::moveChess(QPoint init, QPoint final) {
     anime->setKind(board[final.x()][final.y()]);
     tile[init.x()][init.y()]->setKind(board[init.x()][init.y()]);
 
-    animation->setStartValue(init);
-    animation->setDuration(350);
-    animation->setEndValue(final);
+    animation->setStartValue(QPointF(10 + init.y() * 70 + 70 / 2, 10 + init.x() * 70 + 70 / 2 - 5) - anime->getPicSize() / 2);
+    animation->setDuration(300);
+    animation->setEndValue(QPointF(10 + final.y() * 70 + 70 / 2, 10 + final.x() * 70 + 70 / 2) - anime->getPicSize() / 2);
 
     QEventLoop loop; // to stop the execute
     connect(animation, SIGNAL(finished()), &loop, SLOT(quit()));

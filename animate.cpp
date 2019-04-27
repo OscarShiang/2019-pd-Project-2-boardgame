@@ -2,6 +2,11 @@
 #include <QDebug>
 
 void Animate::setKind(QString type) {
+    if (type == "") {
+        hide();
+        return;
+    }
+
     QString piece;
     if (type[1] == "p")
         piece = "pawn";
@@ -26,14 +31,10 @@ void Animate::setKind(QString type) {
     show();
 }
 
-void Animate::setLoc(QPointF pos) {
-    setPos(10 + pos.y() * width + width / 2 - src.width() / 2, 10 + pos.x() * length + length / 2 - src.height() / 2);
-}
-
-QPointF Animate::loc() {
-    return location;
-}
-
 void Animate::finish() {
-//    hide();
+    hide();
+}
+
+QPointF Animate::getPicSize() {
+    return QPointF(src.width(), src.height());
 }

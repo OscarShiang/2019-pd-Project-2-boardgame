@@ -8,6 +8,7 @@
 #include <QPropertyAnimation>
 #include <QObject>
 #include <QPixmap>
+#include "animate.h"
 
 class Tile: public QObject, public QGraphicsItemGroup {
     Q_OBJECT
@@ -16,15 +17,16 @@ public:
     Tile(int color_code);
 
     void setNum(QPoint ipt);
-    void setKind(QString ipt = "");
-    QPoint getPos();
+    void setKind(QString type = "");
+//    QPoint getPos();
     void setRemind(bool ipt);
+    void focus(bool ipt);
+    QPointF getPicPos();
 
     // mouse event
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
-    QString kind, side;
 
 signals:
     void pressed(QPoint pos);
@@ -34,7 +36,8 @@ private:
     QColor color;
     QGraphicsRectItem *rect;
     QGraphicsRectItem *outline;
-    QGraphicsPixmapItem *pic;
+    QPropertyAnimation *animate;
+    Animate *pic;
     static const int width = 70;
     static const int length = 70;
 
