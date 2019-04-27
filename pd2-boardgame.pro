@@ -26,10 +26,16 @@ CONFIG += c++11
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+    animate.cpp \
+    board.cpp \
+    game.cpp \
+    tile.cpp
 
 HEADERS += \
-        mainwindow.h
+    animate.h \
+    board.h \
+    game.h \
+    tile.h
 
 FORMS += \
         mainwindow.ui
@@ -38,3 +44,6 @@ FORMS += \
 qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
+
+RESOURCES += \
+    src.qrc
