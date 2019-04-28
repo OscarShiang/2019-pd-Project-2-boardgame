@@ -26,6 +26,9 @@ Game::Game() {
 
     focusChess = UNFOCUS;
 
+    // for game play
+    turn = "w";
+
     // show the view window
     show();
 }
@@ -86,6 +89,9 @@ void Game::mousePressed(QPoint pos) {
         // test if the tile has no chess
         if (board[pos.x()][pos.y()] == "")
             return;
+        // chack if the right chess is being chosen
+        if (turn != board[pos.x()][pos.y()][0])
+            return ;
         // check if the chess cannot move
         canMove(pos);
         if (possibleList.empty())
@@ -117,6 +123,13 @@ void Game::mousePressed(QPoint pos) {
         moveChess(focusChess, pos);
         possibleList.clear();
         focusChess = UNFOCUS;
+
+        // change the right
+        if (turn == "b")
+            turn = "w";
+        else if (turn == "w")
+            turn = "b";
+
         qDebug() << "release focus";
     }
 }
@@ -140,6 +153,12 @@ void Game::moveChess(QPoint init, QPoint final) {
 
     animation->start();
     loop.exec(); // run the loop
+
+    // promotion set the pawn to queen
+    if (board[final.x()][final.y()][1] == "p" && final.x() == (board[final.x()][final.y()][0] == "b" ? 7 : 0)) {
+        qDebug() << "promotion";
+        board[final.x()][final.y()] = board[final.x()][final.y()][0] + "q";
+    }
 
     tile[final.x()][final.y()]->setKind(board[final.x()][final.y()]);
 

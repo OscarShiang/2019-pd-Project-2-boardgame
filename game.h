@@ -37,11 +37,14 @@ private:
     const int length = 580;
 
     // for chess manage
-    QPoint focusChess;
     QString board[8][8];
+    QPoint focusChess;
     QList <QPoint> possibleList;
 
     const QPoint UNFOCUS = QPoint(-1, -1);
+
+    // for game judgement
+    QString turn;
 
     // for animation
     Animate *anime;
