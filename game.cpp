@@ -45,6 +45,7 @@ Game::Game() {
     makeBoard();
 
     // game pause switch
+    menuShow = true;
     pause = false;
 
     // show the view window
@@ -111,7 +112,7 @@ void Game::putChess() {
 }
 
 void Game::mousePressed(QPoint pos) {
-    if (pause)
+    if (pause || menuShow)
         return;
     if (!editMode) {
         qDebug() << pos << board[pos.x()][pos.y()];
@@ -581,6 +582,8 @@ void Game::gameOver() {
 }
 
 void Game::gameStart() {
+    menuShow = false;
+
     // get rid of the menu object
     title->hide();
     rect->hide();
@@ -617,6 +620,8 @@ void Game::gameStart() {
 }
 
 void Game::displayMenu() {
+    menuShow = true;
+
     if (editMode) {
 //        box->hide();
         delete box;
@@ -667,6 +672,8 @@ void Game::cleanBoard() {
 }
 
 void Game::gameEdit() {
+    menuShow = false;
+
     box = new EditBox();
     scene->addItem(box);
 
@@ -718,14 +725,17 @@ void Game::editChess(QString type) {
 }
 
 void Game::keyPressEvent(QKeyEvent *event) {
+    if (menuShow)
+        return;
     if (event->key() == Qt::Key_Escape) {
         if (!pause) {
             title->setPlainText("game\npause");
-            title->setY(scene->height() / 2 - title->boundingRect().height() / 2);
+            title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
             title->show();
 
             back->show();
 
+            connect(resume, SIGNAL(clicked()), this, SLOT(gameResume()));
             resume->setPos(380, scene->height() / 2 - quit->height() / 2 - 35);
             resume->show();
 
@@ -746,4 +756,13 @@ void Game::keyPressEvent(QKeyEvent *event) {
             pause = false;
         }
     }
+}
+
+void Game::gameResume() {
+    title->hide();
+    resume->hide();
+    back->hide();
+    rect->hide();
+
+    pause = false;
 }

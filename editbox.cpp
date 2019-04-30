@@ -10,7 +10,7 @@ EditBox::EditBox() {
     color = "b";
 
     // create the buttons
-    box = new QGraphicsPixmapItem(QPixmap(":/pic/box.svg").scaledToHeight(200, Qt::FastTransformation));
+    box = new QGraphicsPixmapItem(QPixmap(":/pic/box.svg").scaledToHeight(105, Qt::FastTransformation));
     pawn = new Animate("bp");
     rock = new Animate("br");
     bishop = new Animate("bb");

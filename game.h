@@ -49,6 +49,8 @@ public slots:
     void editRemove();
     void editChess(QString type);
 
+    void gameResume();
+
 signals:
     void checkMate();
     void chessRemove(QString type);
@@ -66,6 +68,8 @@ private:
     QList <QPoint> castlingList; // index 0 for queen side; index 1 for king side
 
     const QPoint NONEXIST = QPoint(-1, -1);
+
+    bool menuShow;
 
     // for game judgement
     QString turn;
