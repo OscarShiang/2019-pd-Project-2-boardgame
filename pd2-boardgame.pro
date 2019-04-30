@@ -27,15 +27,17 @@ CONFIG += c++11
 SOURCES += \
         main.cpp \
     animate.cpp \
-    board.cpp \
     game.cpp \
-    tile.cpp
+    tile.cpp \
+    button.cpp \
+    editbox.cpp
 
 HEADERS += \
     animate.h \
-    board.h \
     game.h \
-    tile.h
+    tile.h \
+    button.h \
+    editbox.h
 
 FORMS +=
 

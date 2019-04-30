@@ -18,7 +18,6 @@ public:
 
     void setNum(QPoint ipt);
     void setKind(QString type = "");
-//    QPoint getPos();
     void setRemind(bool ipt);
     void focus(bool ipt);
     QPointF getPicPos();
@@ -27,6 +26,9 @@ public:
     void mousePressEvent(QGraphicsSceneMouseEvent *event);
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);
+    void editEndEnvent();
+
+    bool firstMove;
 
 signals:
     void pressed(QPoint pos);

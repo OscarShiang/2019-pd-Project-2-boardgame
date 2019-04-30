@@ -12,5 +12,7 @@
         <file>pic/white/pawn.svg</file>
         <file>pic/white/queen.svg</file>
         <file>pic/white/rock.svg</file>
+        <file>font/pixel.ttf</file>
+        <file>pic/box.svg</file>
     </qresource>
 </RCC>

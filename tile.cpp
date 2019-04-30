@@ -5,7 +5,9 @@
 #include <QDebug>
 
 Tile::Tile(int color_code) {
-    // turn the hover function to br active
+    firstMove = true;
+
+    // turn the hover function to be active
     setAcceptHoverEvents(true);
 
     // set the rect size and the style
@@ -29,9 +31,9 @@ Tile::Tile(int color_code) {
     pen.setWidth(3);
     pen.setColor((color_code)? Qt::white : QColor(132, 88, 75));
     outline->setPen(pen);
-
     outline->hide();
 
+    // create the pic object
     pic = new Animate();
     animate = new QPropertyAnimation(pic, "pos");
 
@@ -51,7 +53,7 @@ void Tile::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 }
 
 void Tile::hoverEnterEvent(QGraphicsSceneHoverEvent *event) {
-    rect->setBrush(QColor(255, 151, 31, 255));
+    rect->setBrush(QColor(255, 151, 31));
 }
 
 void Tile::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
@@ -59,13 +61,11 @@ void Tile::hoverLeaveEvent(QGraphicsSceneHoverEvent *event) {
 }
 
 void Tile::setKind(QString type) {
+    if (type == "")
+        firstMove = false;
     pic->setKind(type);
     pic->setPos(width / 2 - qreal(pic->src.width() / 2), length / 2 - qreal(pic->src.height() / 2));
 }
-
-//QPoint Tile::getPos() {
-//    return pos;
-//}
 
 void Tile::setRemind(bool ipt) {
     if (ipt)
@@ -89,4 +89,9 @@ void Tile::focus(bool ipt) {
 
 QPointF Tile::getPicPos() {
     return pic->pos();
+}
+
+void Tile::editEndEnvent() {
+    setAcceptHoverEvents(true);
+    rect->setBrush(color);
 }

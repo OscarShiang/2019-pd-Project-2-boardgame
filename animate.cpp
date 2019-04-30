@@ -1,6 +1,10 @@
 #include "animate.h"
 #include <QDebug>
 
+Animate::Animate(QString type) {
+    setKind(type);
+}
+
 void Animate::setKind(QString type) {
     if (type == "") {
         hide();
@@ -37,4 +41,16 @@ void Animate::finish() {
 
 QPointF Animate::getPicSize() {
     return QPointF(src.width(), src.height());
+}
+
+void Animate::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    emit clicked();
+}
+
+qreal Animate::width() {
+    return src.width();
+}
+
+qreal Animate::height() {
+    return src.height();
 }
