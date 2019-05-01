@@ -62,7 +62,7 @@ private:
     const int width = 580;
     const int length = 580;
 
-    QGraphicsTextItem *title;
+    animateText *title;
 
     // for chess manage
     QString board[8][8];
@@ -85,7 +85,6 @@ private:
     bool editMode;
 
     // for title
-    animateText *text;
     animateRect *rect;
     Button *play;
     Button *edit;

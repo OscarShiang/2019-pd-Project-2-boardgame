@@ -4,6 +4,7 @@
 #include <QGraphicsTextItem>
 #include <QObject>
 #include <QPropertyAnimation>
+#include <QParallelAnimationGroup>
 
 class animateText: public QGraphicsTextItem {
     Q_OBJECT
@@ -11,11 +12,13 @@ class animateText: public QGraphicsTextItem {
     Q_PROPERTY(qreal alpha READ opacity WRITE setOpacity)
 public:
     animateText(QString text, int font_size);
-//    void slideIn();
-//    void slideOut();
+    void slideIn();
+    void slideOut();
 
 private:
     const QString font_family = "Joystix";
+    QPropertyAnimation *loc, *alpha;
+    QParallelAnimationGroup *group;
 };
 
 #endif // ANIMATETEXT_H

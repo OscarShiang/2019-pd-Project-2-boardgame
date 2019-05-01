@@ -15,9 +15,9 @@ public:
     void setKind(QString type);
     QPointF getPicSize();
 
-    QPixmap src;
     const int length = 70;
     const QPoint lengthF = QPoint(70, 70);
+    QPixmap src;
     qreal width();
     qreal height();
 

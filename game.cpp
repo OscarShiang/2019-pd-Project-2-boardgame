@@ -27,8 +27,7 @@ Game::Game() {
 
     // create the title text item
     QFontDatabase::addApplicationFont(":/font/pixel.ttf");
-    title = new QGraphicsTextItem();
-    title->setFont(QFont("Joystix", 60));
+    title = new animateText("test", 60);
 
     // create the edit mode objects
     editMode = false;
@@ -48,15 +47,11 @@ Game::Game() {
     connect(play, SIGNAL(clicked()), this, SLOT(gameStart()));
     connect(quit, SIGNAL(clicked()), this, SLOT(close()));
     connect(edit, SIGNAL(clicked()), this, SLOT(gameEdit()));
-    connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
     connect(again, SIGNAL(clicked()), this ,SLOT(gameStart()));
 
     connect(this, SIGNAL(checkMate()), this, SLOT(gameOver()));
 
     makeBoard();
-
-//    text = new animateText("test", 30);
-//    scene->addItem(text);
 
     // game pause switch
     menuShow = true;
@@ -579,6 +574,8 @@ void Game::gameJudge() {
 }
 
 void Game::gameOver() {
+    rect->setZValue(0);
+
     rect->fadeIn();
 
     title->setPlainText(tr(checkmate == "b" ? "black" : "white") + tr("\nwin\nthe\ngame"));
@@ -596,7 +593,7 @@ void Game::gameStart() {
     menuShow = false;
 
     // get rid of the menu object
-    title->hide();
+    title->slideOut();
     rect->fadeOut();
     play->hide();
     quit->hide();
@@ -649,9 +646,9 @@ void Game::displayMenu() {
 
     title->setPlainText("chess\ngame");
     title->setPos(30, scene->height() / 2 - title->boundingRect().height() / 2 - 20);
-    title->show();
+    title->slideIn();
 
-    rect->show();
+//    rect->show();
 
     play->setPos(380, scene->height() / 2 - play->height() / 2 - 70);
     play->show();
@@ -680,7 +677,7 @@ void Game::gameEdit() {
 
     cleanBoard();
     rect->fadeOut();
-    title->hide();
+    title->slideOut();
     again->hide();
     back->hide();
     quit->hide();
@@ -732,7 +729,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
         if (!pause) {
             title->setPlainText("game\npause");
             title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
-            title->show();
+            title->slideIn();
 
             back->show();
 
@@ -747,7 +744,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
             pause = true;
         }
         else {
-            title->hide();
+            title->slideOut();
             resume->hide();
             back->hide();
             rect->fadeOut();
@@ -758,7 +755,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
 }
 
 void Game::gameResume() {
-    title->hide();
+    title->slideOut();
     resume->hide();
     back->hide();
     rect->fadeOut();
