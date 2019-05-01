@@ -14,6 +14,8 @@
 #include "animate.h"
 #include "button.h"
 #include "editbox.h"
+#include "animaterect.h"
+#include "animatetext.h"
 
 class Game: public QGraphicsView {
     Q_OBJECT
@@ -49,6 +51,7 @@ public slots:
     void editRemove();
     void editChess(QString type);
 
+    // method for pause screen
     void gameResume();
 
 signals:
@@ -82,7 +85,8 @@ private:
     bool editMode;
 
     // for title
-    QGraphicsRectItem *rect;
+    animateText *text;
+    animateRect *rect;
     Button *play;
     Button *edit;
     Button *quit;

@@ -34,7 +34,7 @@ Game::Game() {
     editMode = false;
 
     // construct buttons
-    rect = new QGraphicsRectItem();
+    rect = new animateRect(width, length);
     play = new Button("play");
     quit = new Button("quit");
     edit = new Button("edit");
@@ -42,7 +42,21 @@ Game::Game() {
     back = new Button("back");
     resume = new Button("resume", 140, 50, 25);
 
+    // connect the function with the coresponding buttons
+    connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
+    connect(resume, SIGNAL(clicked()), this, SLOT(gameResume()));
+    connect(play, SIGNAL(clicked()), this, SLOT(gameStart()));
+    connect(quit, SIGNAL(clicked()), this, SLOT(close()));
+    connect(edit, SIGNAL(clicked()), this, SLOT(gameEdit()));
+    connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
+    connect(again, SIGNAL(clicked()), this ,SLOT(gameStart()));
+
+    connect(this, SIGNAL(checkMate()), this, SLOT(gameOver()));
+
     makeBoard();
+
+//    text = new animateText("test", 30);
+//    scene->addItem(text);
 
     // game pause switch
     menuShow = true;
@@ -77,7 +91,6 @@ void Game::makeBoard() {
     scene->addItem(back);
     scene->addItem(resume);
     scene->addItem(title);
-
 }
 
 void Game::putChess() {
@@ -170,7 +183,7 @@ void Game::mousePressed(QPoint pos) {
         qDebug() << "here";
         if (focusChess == NONEXIST) {
             focusChess = pos;
-            rect->show();
+            rect->fadeIn();
             box->show();
 
             box->setZValue(1);
@@ -192,7 +205,7 @@ void Game::mousePressed(QPoint pos) {
             tile[focusChess.x()][focusChess.y()]->editEndEnvent();
             focusChess = NONEXIST;
             box->hide();
-            rect->hide();
+            rect->fadeOut();
             qDebug() << "unfocus";
         }
     }
@@ -566,17 +579,15 @@ void Game::gameJudge() {
 }
 
 void Game::gameOver() {
-    rect->show();
+    rect->fadeIn();
 
     title->setPlainText(tr(checkmate == "b" ? "black" : "white") + tr("\nwin\nthe\ngame"));
     title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
     title->show();
 
-    connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
     back->setPos(380, scene->height() / 2 - quit->height() / 2 + 70);
     back->show();
 
-    connect(again, SIGNAL(clicked()), this ,SLOT(gameStart()));
     again->setPos(380, scene->height() / 2 - quit->height() / 2);
     again->show();
 }
@@ -586,7 +597,7 @@ void Game::gameStart() {
 
     // get rid of the menu object
     title->hide();
-    rect->hide();
+    rect->fadeOut();
     play->hide();
     quit->hide();
     edit->hide();
@@ -599,11 +610,10 @@ void Game::gameStart() {
         putChess(); // normal play
     }
     else {
-        rect->setZValue(0);
+        rect->setZValue(1);
         tile[focusChess.x()][focusChess.y()]->setZValue(0);
         tile[focusChess.x()][focusChess.y()]->editEndEnvent();
 
-        box->hide();
         delete box;
     }
 
@@ -616,14 +626,12 @@ void Game::gameStart() {
     turn = "w";
     check = false;
     checkmate = "";
-    connect(this, SIGNAL(checkMate()), this, SLOT(gameOver()));
 }
 
 void Game::displayMenu() {
     menuShow = true;
 
     if (editMode) {
-//        box->hide();
         delete box;
     }
 
@@ -643,21 +651,14 @@ void Game::displayMenu() {
     title->setPos(30, scene->height() / 2 - title->boundingRect().height() / 2 - 20);
     title->show();
 
-    rect->setRect(0, 0, width, length);
-    rect->setPen(QPen(Qt::transparent));
-    rect->setBrush(Qt::white);
-    rect->setOpacity(0.65);
     rect->show();
 
-    connect(play, SIGNAL(clicked()), this, SLOT(gameStart()));
     play->setPos(380, scene->height() / 2 - play->height() / 2 - 70);
     play->show();
 
-    connect(quit, SIGNAL(clicked()), this, SLOT(close()));
     quit->setPos(380, scene->height() / 2 - quit->height() / 2 + 70);
     quit->show();
 
-    connect(edit, SIGNAL(clicked()), this, SLOT(gameEdit()));
     edit->setPos(380, scene->height() / 2 - edit->height() / 2);
     edit->show();
 }
@@ -678,7 +679,7 @@ void Game::gameEdit() {
     scene->addItem(box);
 
     cleanBoard();
-    rect->hide();
+    rect->fadeOut();
     title->hide();
     again->hide();
     back->hide();
@@ -709,7 +710,7 @@ void Game::editRemove() {
     tile[focusChess.x()][focusChess.y()]->setZValue(0);
     focusChess = NONEXIST;
     box->hide();
-    rect->hide();
+    rect->fadeOut();
 }
 
 void Game::editChess(QString type) {
@@ -721,7 +722,7 @@ void Game::editChess(QString type) {
     tile[focusChess.x()][focusChess.y()]->setZValue(0);
     focusChess = NONEXIST;
     box->hide();
-    rect->hide();
+    rect->fadeOut();
 }
 
 void Game::keyPressEvent(QKeyEvent *event) {
@@ -735,15 +736,13 @@ void Game::keyPressEvent(QKeyEvent *event) {
 
             back->show();
 
-            connect(resume, SIGNAL(clicked()), this, SLOT(gameResume()));
             resume->setPos(380, scene->height() / 2 - quit->height() / 2 - 35);
             resume->show();
 
-            connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
             back->setPos(380, scene->height() / 2 - quit->height() / 2 + 35);
             back->show();
 
-            rect->show();
+            rect->fadeIn();
 
             pause = true;
         }
@@ -751,7 +750,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
             title->hide();
             resume->hide();
             back->hide();
-            rect->hide();
+            rect->fadeOut();
 
             pause = false;
         }
@@ -762,7 +761,7 @@ void Game::gameResume() {
     title->hide();
     resume->hide();
     back->hide();
-    rect->hide();
+    rect->fadeOut();
 
     pause = false;
 }

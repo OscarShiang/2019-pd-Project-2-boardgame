@@ -30,14 +30,18 @@ SOURCES += \
     game.cpp \
     tile.cpp \
     button.cpp \
-    editbox.cpp
+    editbox.cpp \
+    animaterect.cpp \
+    animatetext.cpp
 
 HEADERS += \
     animate.h \
     game.h \
     tile.h \
     button.h \
-    editbox.h
+    editbox.h \
+    animaterect.h \
+    animatetext.h
 
 FORMS +=
 

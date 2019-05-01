@@ -225,12 +225,10 @@ void EditBox::chessDel(QString type) {
 
 void EditBox::checkForReady() {
     QPoint sum = num_king + num_pawn + num_rock + num_queen + num_bishop + num_knight;
-
-    if (num_king != QPoint(0, 0)) {
-        qDebug() << "can play";
-        emit readyToStart();
-    }
+    if (num_king.x() == 1 || num_king.y() == 1)
+        return;
     else if (sum.x() != 16 && sum.y() != 16) {
+        qDebug() << "can play sum" << num_king;
         emit readyToStart();
     }
 }

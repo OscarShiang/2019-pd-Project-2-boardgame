@@ -3,12 +3,11 @@
 #include <QBrush>
 #include <QFont>
 
-Button::Button(QString label_name, int width, int height, int size) {
+Button::Button(QString label_name, int width, int height, int size) : font_size(size) {
     setAcceptHoverEvents(true);
 
     rect = new QGraphicsRectItem();
     rect->setRect(0, 0, width, height);
-    font_size = size;
 
     QPen pen;
     pen.setColor(Qt::red);
