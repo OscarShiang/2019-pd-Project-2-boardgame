@@ -18,7 +18,7 @@ Game::Game() {
     scene = new QGraphicsScene();
     scene->setSceneRect(0, 0, width, length);
     setScene(scene);
-    scene->setBackgroundBrush(QColor(58, 23, 17)); //(79, 46, 41)
+    scene->setBackgroundBrush(QColor(58, 23, 17)); // (79, 46, 41)
 
     // create animation object
     anime = new Animate();
@@ -115,6 +115,9 @@ void Game::putChess() {
     for (int i = 0; i < 8; i ++) {
         for (int j = 0; j < 8; j ++) {
             tile[i][j]->setKind(board[i][j]);
+            if (board[i][j] != "") {
+                tile[i][j]->firstMove = true;
+            }
         }
     }
 }
@@ -580,7 +583,7 @@ void Game::gameOver() {
 
     title->setPlainText(tr(checkmate == "b" ? "black" : "white") + tr("\nwin\nthe\ngame"));
     title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
-    title->show();
+    title->slideIn();
 
     back->setPos(380, scene->height() / 2 - quit->height() / 2 + 70);
     back->show();
@@ -593,7 +596,6 @@ void Game::gameStart() {
     menuShow = false;
 
     // get rid of the menu object
-    title->slideOut();
     rect->fadeOut();
     play->hide();
     quit->hide();
@@ -603,6 +605,7 @@ void Game::gameStart() {
 
     // create the board
     if (!editMode) {
+        title->slideOut();
         cleanBoard();
         putChess(); // normal play
     }
@@ -726,6 +729,8 @@ void Game::keyPressEvent(QKeyEvent *event) {
     if (menuShow)
         return;
     if (event->key() == Qt::Key_Escape) {
+        rect->setZValue(0);
+
         if (!pause) {
             title->setPlainText("game\npause");
             title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
@@ -755,6 +760,7 @@ void Game::keyPressEvent(QKeyEvent *event) {
 }
 
 void Game::gameResume() {
+    rect->setZValue(0);
     title->slideOut();
     resume->hide();
     back->hide();

@@ -10,6 +10,7 @@ class animateText: public QGraphicsTextItem {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(qreal alpha READ opacity WRITE setOpacity)
+
 public:
     animateText(QString text, int font_size);
     void slideIn();
