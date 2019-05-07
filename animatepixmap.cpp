@@ -1,11 +1,11 @@
-#include "animate.h"
+#include "animatepixmap.h"
 #include <QDebug>
 
-Animate::Animate(QString type) {
+AnimatePixmap::AnimatePixmap(QString type) {
     setKind(type);
 }
 
-void Animate::setKind(QString type) {
+void AnimatePixmap::setKind(QString type) {
     if (type == "") {
         hide();
         return;
@@ -35,22 +35,22 @@ void Animate::setKind(QString type) {
     show();
 }
 
-void Animate::finish() {
+void AnimatePixmap::finish() {
     hide();
 }
 
-QPointF Animate::getPicSize() {
+QPointF AnimatePixmap::getPicSize() {
     return QPointF(src.width(), src.height());
 }
 
-void Animate::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+void AnimatePixmap::mousePressEvent(QGraphicsSceneMouseEvent *event) {
     emit clicked();
 }
 
-qreal Animate::width() {
+qreal AnimatePixmap::width() {
     return src.width();
 }
 
-qreal Animate::height() {
+qreal AnimatePixmap::height() {
     return src.height();
 }

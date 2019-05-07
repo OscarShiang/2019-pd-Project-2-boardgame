@@ -6,13 +6,13 @@
 #include <QPropertyAnimation>
 #include <QParallelAnimationGroup>
 
-class animateText: public QGraphicsTextItem {
+class AnimateText: public QGraphicsTextItem {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(qreal alpha READ opacity WRITE setOpacity)
 
 public:
-    animateText(QString text, int font_size);
+    AnimateText(QString text, int font_size);
     void slideIn();
     void slideOut();
 

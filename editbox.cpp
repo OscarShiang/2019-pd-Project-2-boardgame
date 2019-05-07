@@ -11,12 +11,12 @@ EditBox::EditBox() {
 
     // create the buttons
     box = new QGraphicsPixmapItem(QPixmap(":/pic/box.svg").scaledToHeight(105, Qt::FastTransformation));
-    pawn = new Animate("bp");
-    rock = new Animate("br");
-    bishop = new Animate("bb");
-    knight = new Animate("bn");
-    king = new Animate("bk");
-    queen = new Animate("bq");
+    pawn = new AnimatePixmap("bp");
+    rock = new AnimatePixmap("br");
+    bishop = new AnimatePixmap("bb");
+    knight = new AnimatePixmap("bn");
+    king = new AnimatePixmap("bk");
+    queen = new AnimatePixmap("bq");
 
     addToGroup(box);
 

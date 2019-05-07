@@ -4,7 +4,7 @@
 #include <QEventLoop>
 #include <QDebug>
 
-animateRect::animateRect(int width, int height) {
+AnimateRect::AnimateRect(int width, int height) {
     // set the appearance of rect
     setRect(0, 0, width, height);
     setPen(QPen(Qt::transparent));
@@ -15,7 +15,7 @@ animateRect::animateRect(int width, int height) {
     anime = new QPropertyAnimation(this, "alpha");
 }
 
-void animateRect::fadeIn() {
+void AnimateRect::fadeIn() {
     show();
     anime->setDuration(250);
     anime->setStartValue(0);
@@ -24,7 +24,7 @@ void animateRect::fadeIn() {
     anime->start();
 }
 
-void animateRect::fadeOut() {
+void AnimateRect::fadeOut() {
     anime->setDuration(250);
     anime->setStartValue(0.6);
     anime->setKeyValueAt(0.3, 0.3);

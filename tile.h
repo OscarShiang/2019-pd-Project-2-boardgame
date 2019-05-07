@@ -8,7 +8,7 @@
 #include <QPropertyAnimation>
 #include <QObject>
 #include <QPixmap>
-#include "animate.h"
+#include "animatepixmap.h"
 
 class Tile: public QObject, public QGraphicsItemGroup {
     Q_OBJECT
@@ -39,7 +39,7 @@ private:
     QGraphicsRectItem *rect;
     QGraphicsRectItem *outline;
     QPropertyAnimation *animate;
-    Animate *pic;
+    AnimatePixmap *pic;
     static const int width = 70;
     static const int length = 70;
 

@@ -25,8 +25,8 @@ DEFINES += QT_DEPRECATED_WARNINGS
 CONFIG += c++11
 
 SOURCES += \
+    animatepixmap.cpp \
         main.cpp \
-    animate.cpp \
     game.cpp \
     tile.cpp \
     button.cpp \
@@ -35,7 +35,7 @@ SOURCES += \
     animatetext.cpp
 
 HEADERS += \
-    animate.h \
+    animatepixmap.h \
     game.h \
     tile.h \
     button.h \

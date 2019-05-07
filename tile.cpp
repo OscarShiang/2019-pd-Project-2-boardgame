@@ -34,7 +34,7 @@ Tile::Tile(int color_code) {
     outline->hide();
 
     // create the pic object
-    pic = new Animate();
+    pic = new AnimatePixmap();
     animate = new QPropertyAnimation(pic, "pos");
 
     // add the element into group

@@ -5,14 +5,14 @@
 #include <QObject>
 #include <QPropertyAnimation>
 
-class animateRect: public QObject, public QGraphicsRectItem {
+class AnimateRect: public QObject, public QGraphicsRectItem {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
     Q_PROPERTY(qreal alpha READ opacity WRITE setOpacity)
 
 public:
     // constructors
-    animateRect(int width, int height);
+    AnimateRect(int width, int height);
 
     // animation functions
     void fadeIn();

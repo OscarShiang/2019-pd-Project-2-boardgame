@@ -2,7 +2,7 @@
 #include <QFont>
 #include <QPointF>
 
-animateText::animateText(QString text, int font_size) {
+AnimateText::AnimateText(QString text, int font_size) {
     setFont(QFont(font_family, font_size));
     setPlainText(text);
 
@@ -15,7 +15,7 @@ animateText::animateText(QString text, int font_size) {
     group->addAnimation(alpha);
 }
 
-void animateText::slideIn() {
+void AnimateText::slideIn() {
     qreal x = this->x(), y = this->y();
     // set pos animation
     loc->setStartValue(QPointF(x, y - 5));
@@ -30,7 +30,7 @@ void animateText::slideIn() {
     group->start();
 }
 
-void animateText::slideOut() {
+void AnimateText::slideOut() {
     qreal x = this->x(), y = this->y();
     // set pos animation
     loc->setStartValue(QPointF(x, y));

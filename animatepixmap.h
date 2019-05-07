@@ -6,11 +6,11 @@
 #include <QPropertyAnimation>
 #include <QGraphicsSceneMouseEvent>
 
-class Animate: public QObject, public QGraphicsPixmapItem {
+class AnimatePixmap: public QObject, public QGraphicsPixmapItem {
     Q_OBJECT
     Q_PROPERTY(QPointF pos READ pos WRITE setPos)
 public:
-    Animate(QString type = "");
+    AnimatePixmap(QString type = "");
 
     void setKind(QString type);
     QPointF getPicSize();

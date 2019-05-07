@@ -4,7 +4,7 @@
 #include <QObject>
 #include <QGraphicsItemGroup>
 #include <QGraphicsPixmapItem>
-#include "animate.h"
+#include "animatepixmap.h"
 #include "button.h"
 
 class EditBox: public QObject, public QGraphicsItemGroup {
@@ -35,7 +35,7 @@ signals:
 
 private:
     QGraphicsPixmapItem *box;
-    Animate *pawn, *rock, *bishop, *knight, *king, *queen;
+    AnimatePixmap *pawn, *rock, *bishop, *knight, *king, *queen;
     QString color;
 
     QPoint num_pawn, num_rock, num_bishop, num_knight, num_king, num_queen;

@@ -11,7 +11,7 @@
 #include <QGraphicsTextItem>
 #include <QKeyEvent>
 #include "tile.h"
-#include "animate.h"
+#include "animatepixmap.h"
 #include "button.h"
 #include "editbox.h"
 #include "animaterect.h"
@@ -62,7 +62,7 @@ private:
     const int width = 580;
     const int length = 580;
 
-    animateText *title;
+    AnimateText *title;
 
     // for chess manage
     QString board[8][8];
@@ -85,7 +85,7 @@ private:
     bool editMode;
 
     // for title
-    animateRect *rect;
+    AnimateRect *rect;
     Button *play;
     Button *edit;
     Button *quit;
@@ -97,7 +97,7 @@ private:
     bool pause;
 
     // for animation
-    Animate *anime;
+    AnimatePixmap *anime;
     QPropertyAnimation *animation;
 };
 

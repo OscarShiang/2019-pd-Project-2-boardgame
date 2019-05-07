@@ -21,19 +21,19 @@ Game::Game() {
     scene->setBackgroundBrush(QColor(58, 23, 17)); // (79, 46, 41)
 
     // create animation object
-    anime = new Animate();
+    anime = new AnimatePixmap();
     anime->hide();
     animation = new QPropertyAnimation(anime, "pos");
 
     // create the title text item
     QFontDatabase::addApplicationFont(":/font/pixel.ttf");
-    title = new animateText("test", 60);
+    title = new AnimateText("test", 60);
 
     // create the edit mode objects
     editMode = false;
 
     // construct buttons
-    rect = new animateRect(width, length);
+    rect = new AnimateRect(width, length);
     play = new Button("play");
     quit = new Button("quit");
     edit = new Button("edit");
@@ -62,7 +62,7 @@ Game::Game() {
 }
 
 void Game::makeBoard() {
-    // add the  tile
+    // add the tile
     for (int i = 0; i < 8; i ++) {
         for (int j = 0; j < 8; j ++) {
             board[i][j] = "";
