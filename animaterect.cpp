@@ -9,7 +9,6 @@ AnimateRect::AnimateRect(int width, int height) {
     setRect(0, 0, width, height);
     setPen(QPen(Qt::transparent));
     setBrush(Qt::white);
-    setOpacity(0.6);
 
     // create the animation object
     anime = new QPropertyAnimation(this, "alpha");
@@ -30,4 +29,8 @@ void AnimateRect::fadeOut() {
     anime->setKeyValueAt(0.3, 0.3);
     anime->setEndValue(0);
     anime->start();
+}
+
+void AnimateRect::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    emit clicked();
 }

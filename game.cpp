@@ -29,9 +29,6 @@ Game::Game() {
     QFontDatabase::addApplicationFont(":/font/pixel.ttf");
     title = new AnimateText("test", 60);
 
-    // create the edit mode objects
-    editMode = false;
-
     // construct buttons
     rect = new AnimateRect(width, length);
     play = new Button("play");
@@ -40,22 +37,24 @@ Game::Game() {
     again = new Button("again");
     back = new Button("back");
     resume = new Button("resume", 140, 50, 25);
+    online = new Button("online", 140, 50, 25);
+    classic = new Button("classic", 140, 50, 22);
+
+    rect->setOpacity(0.6);
 
     // connect the function with the coresponding buttons
     connect(back, SIGNAL(clicked()), this, SLOT(displayMenu()));
     connect(resume, SIGNAL(clicked()), this, SLOT(gameResume()));
-    connect(play, SIGNAL(clicked()), this, SLOT(gameStart()));
+    connect(play, SIGNAL(clicked()), this, SLOT(gameSelect()));
     connect(quit, SIGNAL(clicked()), this, SLOT(close()));
     connect(edit, SIGNAL(clicked()), this, SLOT(gameEdit()));
     connect(again, SIGNAL(clicked()), this ,SLOT(gameStart()));
+    connect(classic, SIGNAL(clicked()), this, SLOT(gameStart()));
+    connect(online, SIGNAL(clicked()), this, SLOT(gameOnline()));
 
     connect(this, SIGNAL(checkMate()), this, SLOT(gameOver()));
 
     makeBoard();
-
-    // game pause switch
-    menuShow = true;
-    pause = false;
 
     // show the view window
     show();
@@ -86,6 +85,8 @@ void Game::makeBoard() {
     scene->addItem(back);
     scene->addItem(resume);
     scene->addItem(title);
+    scene->addItem(online);
+    scene->addItem(classic);
 }
 
 void Game::putChess() {
@@ -123,9 +124,10 @@ void Game::putChess() {
 }
 
 void Game::mousePressed(QPoint pos) {
-    if (pause || menuShow)
+    qDebug() << "TEST";
+    if (mode == Mode::Pause || mode == Mode::Menu)
         return;
-    if (!editMode) {
+    if (mode != Mode::Edit) {
         qDebug() << pos << board[pos.x()][pos.y()];
 
         // set focus
@@ -144,12 +146,6 @@ void Game::mousePressed(QPoint pos) {
             focusChess = pos;
             tile[pos.x()][pos.y()]->focus(true);
 
-            //        qDebug() << "START can move list";
-            //        for (QSet <QPoint> ::iterator it = possibleList.begin(); it != possibleList.end(); it ++) {
-            //            qDebug() << *it;
-            //        }
-            //        qDebug() << "END";
-
             setRemind(true);
 
             qDebug() << "set focus";
@@ -166,19 +162,26 @@ void Game::mousePressed(QPoint pos) {
             tile[focusChess.x()][focusChess.y()]->focus(false);
             moveChess(focusChess, pos);
             possibleList.clear();
-            focusChess = NONEXIST;
 
-            // change the right
-            if (turn == "b")
-                turn = "w";
-            else if (turn == "w")
-                turn = "b";
+            if (!playOnline) {
+                // change the right
+                if (turn == "b")
+                    turn = "w";
+                else if (turn == "w")
+                    turn = "b";
+            }
+            else {
+                // play online: send message
+                radio->sendMessage(QString("[%1][%2]->[%3][%4]").arg(focusChess.x()).arg(focusChess.y()).arg(pos.x()).arg(pos.y()));
+                turn = "";
+            }
+
+            focusChess = NONEXIST;
 
             qDebug() << "release focus";
         }
     }
-    else {
-        qDebug() << "here";
+    else if (mode == Mode::Edit) {
         if (focusChess == NONEXIST) {
             focusChess = pos;
             rect->fadeIn();
@@ -577,6 +580,10 @@ void Game::gameJudge() {
 }
 
 void Game::gameOver() {
+    if (playOnline) {
+        delete radio;
+    }
+
     rect->setZValue(0);
 
     rect->fadeIn();
@@ -593,8 +600,6 @@ void Game::gameOver() {
 }
 
 void Game::gameStart() {
-    menuShow = false;
-
     // get rid of the menu object
     rect->fadeOut();
     play->hide();
@@ -602,9 +607,16 @@ void Game::gameStart() {
     edit->hide();
     again->hide();
     back->hide();
+    classic->hide();
+    online->hide();
+
+    if (playOnline) {
+        qDebug() << "online";
+        radio->hide();
+    }
 
     // create the board
-    if (!editMode) {
+    if (mode != Mode::Edit) {
         title->slideOut();
         cleanBoard();
         putChess(); // normal play
@@ -617,32 +629,40 @@ void Game::gameStart() {
         delete box;
     }
 
-    editMode = false;
+    mode = Mode::Play;
 
     focusChess = NONEXIST;
     castlingList = {NONEXIST, NONEXIST};
 
     // for game play
-    turn = "w";
+    if (!playOnline)
+        turn = "w";
     check = false;
     checkmate = "";
+
+
 }
 
 void Game::displayMenu() {
-    menuShow = true;
-
-    if (editMode) {
+    if (mode == Mode::Edit) {
         delete box;
     }
+    if (mode == Mode::Select) {
+        delete radio;
+    }
 
-    pause = false;
-    editMode = false;
+    playOnline = false;
+
+    mode = Mode::Menu;
 
     rect->setZValue(0);
 
+    // button hide
     back->hide();
     resume->hide();
     again->hide();
+    classic->hide();
+    online->hide();
 
     cleanBoard();
     putChess();
@@ -651,16 +671,14 @@ void Game::displayMenu() {
     title->setPos(30, scene->height() / 2 - title->boundingRect().height() / 2 - 20);
     title->slideIn();
 
-//    rect->show();
-
     play->setPos(380, scene->height() / 2 - play->height() / 2 - 70);
     play->show();
 
-    quit->setPos(380, scene->height() / 2 - quit->height() / 2 + 70);
-    quit->show();
-
     edit->setPos(380, scene->height() / 2 - edit->height() / 2);
     edit->show();
+
+    quit->setPos(380, scene->height() / 2 - quit->height() / 2 + 70);
+    quit->show();
 }
 
 void Game::cleanBoard() {
@@ -673,8 +691,6 @@ void Game::cleanBoard() {
 }
 
 void Game::gameEdit() {
-    menuShow = false;
-
     box = new EditBox();
     scene->addItem(box);
 
@@ -696,7 +712,7 @@ void Game::gameEdit() {
     connect(this, SIGNAL(chessRemove(QString)), box, SLOT(chessDel(QString)));
     connect(box, SIGNAL(addChess(QString)), this, SLOT(editChess(QString)));
 
-    editMode = true;
+    mode = Mode::Edit;
 }
 
 void Game::editRemove() {
@@ -726,12 +742,16 @@ void Game::editChess(QString type) {
 }
 
 void Game::keyPressEvent(QKeyEvent *event) {
-    if (menuShow)
+    if (mode == Mode::Menu)
         return;
-    if (event->key() == Qt::Key_Escape) {
+    if (mode == Mode::Play && playOnline) {
+        if (event->key() == Qt::Key_Space)
+            radio->sendMessage("test");
+    }
+    if (event->key() == Qt::Key_Escape && (mode == Mode::Play || mode == Mode::Edit || mode == Mode::Pause)) {
         rect->setZValue(0);
 
-        if (!pause) {
+        if (mode != Mode::Pause) {
             title->setPlainText("game\npause");
             title->setY(scene->height() / 2 - title->boundingRect().height() / 2 - 20);
             title->slideIn();
@@ -746,7 +766,8 @@ void Game::keyPressEvent(QKeyEvent *event) {
 
             rect->fadeIn();
 
-            pause = true;
+            prevMode = mode;
+            mode = Mode::Pause;
         }
         else {
             title->slideOut();
@@ -754,8 +775,11 @@ void Game::keyPressEvent(QKeyEvent *event) {
             back->hide();
             rect->fadeOut();
 
-            pause = false;
+            mode = prevMode;
         }
+    }
+    else if (mode == Mode::Select) {
+        radio->keyPressEvent(event);
     }
 }
 
@@ -766,5 +790,64 @@ void Game::gameResume() {
     back->hide();
     rect->fadeOut();
 
-    pause = false;
+    mode = prevMode;
+}
+
+void Game::gameSelect() {
+    title->setPlainText("game\nmode");
+    title->setY(length / 2 - title->boundingRect().height() / 2 - 20);
+    title->slideIn();
+
+    // button hide
+    play->hide();
+    edit->hide();
+    quit->hide();
+
+    // button show
+    classic->show();
+    online->show();
+    back->show();
+
+    classic->setPos(380, scene->height() / 2 - classic->height() / 2 - 70);
+    online->setPos(380, scene->height() / 2 - online->height() / 2);
+    back->setPos(380, scene->height() / 2 - back->height() / 2 + 70);
+
+}
+
+void Game::gameOnline() {
+    // button hide
+    classic->hide();
+    online->hide();
+
+    // create and set on radio
+    radio = new Radio();
+    scene->addItem(radio);
+    radio->setPos(380, scene->height() / 2 - 95);
+    connect(radio, SIGNAL(goBack()), this, SLOT(displayMenu()));
+    connect(radio, SIGNAL(select(QString)), this, SLOT(logIn(QString)));
+    connect(radio, SIGNAL(connected()), this, SLOT(gameStart()));
+    connect(radio, SIGNAL(received(QString)), this, SLOT(analyseData(QString)));
+
+    playOnline = true;
+
+    back->setPos(380, scene->height() / 2 - back->height() / 2 + 70);
+}
+
+void Game::logIn(QString ipt) {
+    mode = Mode::Select;
+    radio->setX(250);
+    if (ipt == "host") {
+        turn = "w";
+    }
+    else if (ipt == "client") {
+        turn = "";
+    }
+    back->hide();
+}
+
+void Game::analyseData(QString ipt) {
+    int init_x, init_y, final_x, final_y;
+    sscanf(radio->getData().toStdString().c_str(), "[%d][%d]->[%d][%d]", &init_x, &init_y, &final_x, &final_y);
+    moveChess(QPoint(init_x, init_y), QPoint(final_x, final_y));
+    turn = ipt;
 }

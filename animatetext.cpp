@@ -44,3 +44,7 @@ void AnimateText::slideOut() {
 
     group->start();
 }
+
+void AnimateText::setFontSize(int size_ipt) {
+    setFont(QFont(font_family, size_ipt));
+}

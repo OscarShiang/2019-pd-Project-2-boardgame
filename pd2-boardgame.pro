@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -26,8 +26,11 @@ CONFIG += c++11
 
 SOURCES += \
     animatepixmap.cpp \
-        main.cpp \
+    cursor.cpp \
+    main.cpp \
     game.cpp \
+    radio.cpp \
+    textinput.cpp \
     tile.cpp \
     button.cpp \
     editbox.cpp \
@@ -36,7 +39,10 @@ SOURCES += \
 
 HEADERS += \
     animatepixmap.h \
+    cursor.h \
     game.h \
+    radio.h \
+    textinput.h \
     tile.h \
     button.h \
     editbox.h \

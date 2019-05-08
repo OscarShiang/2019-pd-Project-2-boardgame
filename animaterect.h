@@ -4,6 +4,7 @@
 #include <QGraphicsRectItem>
 #include <QObject>
 #include <QPropertyAnimation>
+#include <QGraphicsSceneMouseEvent>
 
 class AnimateRect: public QObject, public QGraphicsRectItem {
     Q_OBJECT
@@ -17,6 +18,11 @@ public:
     // animation functions
     void fadeIn();
     void fadeOut();
+
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+signals:
+    void clicked();
 
 private:
     QPropertyAnimation *anime;

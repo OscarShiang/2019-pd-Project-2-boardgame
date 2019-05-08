@@ -15,6 +15,7 @@ public:
     AnimateText(QString text, int font_size);
     void slideIn();
     void slideOut();
+    void setFontSize(int size_ipt);
 
 private:
     const QString font_family = "Joystix";

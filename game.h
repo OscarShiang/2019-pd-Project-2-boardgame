@@ -10,12 +10,14 @@
 #include <QPropertyAnimation>
 #include <QGraphicsTextItem>
 #include <QKeyEvent>
+#include <cstdlib>
 #include "tile.h"
 #include "animatepixmap.h"
 #include "button.h"
 #include "editbox.h"
 #include "animaterect.h"
 #include "animatetext.h"
+#include "radio.h"
 
 class Game: public QGraphicsView {
     Q_OBJECT
@@ -43,9 +45,13 @@ public:
 public slots:
     void mousePressed(QPoint pos);
     void displayMenu();
+    void gameSelect();
     void gameStart();
     void gameEdit();
     void gameOver();
+    void gameOnline();
+    void logIn(QString ipt);
+    void analyseData(QString ipt);
 
     // method for editing board
     void editRemove();
@@ -72,7 +78,7 @@ private:
 
     const QPoint NONEXIST = QPoint(-1, -1);
 
-    bool menuShow;
+    int mode, prevMode; // 1 for menu; 2 for mode select; 3 for edit; -1 for pause
 
     // for game judgement
     QString turn;
@@ -82,7 +88,6 @@ private:
 
     // for edit mode
     EditBox *box;
-    bool editMode;
 
     // for title
     AnimateRect *rect;
@@ -92,13 +97,20 @@ private:
     Button *again;
     Button *back;
     Button *resume;
+    Button *online;
+    Button *classic;
 
-    // for game pause
-    bool pause;
+    // for internet connection
+    Radio *radio;
+    bool playOnline;
 
     // for animation
     AnimatePixmap *anime;
     QPropertyAnimation *animation;
 };
+
+namespace Mode {
+    enum {Menu, Select, Play, Edit, Pause};
+}
 
 #endif // GAME_H
