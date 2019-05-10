@@ -16,7 +16,6 @@ class Radio: public QObject, public QGraphicsItemGroup {
     Q_OBJECT
 public:
     Radio();
-    ~Radio();
 
     void sendMessage(QString content);
     void keyPressEvent(QKeyEvent *event);

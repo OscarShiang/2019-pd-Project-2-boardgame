@@ -2,6 +2,7 @@
 #include <QFont>
 #include <QFontMetrics>
 #include <QDebug>
+#include <QPen>
 
 #define L -1 // left
 #define R 1 // right
@@ -9,6 +10,18 @@
 TextInput::TextInput(int width, int height, int size): font_size(size) {
     // set the height and width for the whole group
     boundingRect().setRect(0, 0, width, height);
+
+    // create the background rect
+    rect = new QGraphicsRectItem();
+    rect->setRect(0, 0, 320, 50);
+    rect->setBrush(Qt::white);
+
+    QPen pen;
+    pen.setWidth(5);
+    pen.setColor(Qt::black);
+    rect->setPen(pen);
+
+    addToGroup(rect);
 
     // create and add the textItem into the group
     text = new AnimateText("", font_size);
@@ -121,10 +134,6 @@ void TextInput::releaseFocus() {
     cursor->pause();
 }
 
-void TextInput::getFocus() {
-    cursor->start();
-}
-
 void TextInput::setMaxText(int maxtext) {
     limit = maxtext;
 }
@@ -136,4 +145,13 @@ QString TextInput::getContent() {
     update(cursor->getPos());
     textCount = 0;
     return content;
+}
+
+void TextInput::mousePressEvent(QGraphicsSceneMouseEvent *event) {
+    emit clicked();
+    cursor->start();
+}
+
+void TextInput::getFocus() {
+    cursor->start();
 }

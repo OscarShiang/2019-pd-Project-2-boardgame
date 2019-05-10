@@ -19,11 +19,6 @@ public:
     void fadeIn();
     void fadeOut();
 
-    void mousePressEvent(QGraphicsSceneMouseEvent *event);
-
-signals:
-    void clicked();
-
 private:
     QPropertyAnimation *anime;
 };

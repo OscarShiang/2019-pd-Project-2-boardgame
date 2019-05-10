@@ -30,7 +30,3 @@ void AnimateRect::fadeOut() {
     anime->setEndValue(0);
     anime->start();
 }
-
-void AnimateRect::mousePressEvent(QGraphicsSceneMouseEvent *event) {
-    emit clicked();
-}

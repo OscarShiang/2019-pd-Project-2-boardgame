@@ -3,6 +3,8 @@
 
 #include <QObject>
 #include <QGraphicsItemGroup>
+#include <QGraphicsRectItem>
+#include <QGraphicsSceneMouseEvent>
 #include <QKeyEvent>
 #include <QString>
 #include "cursor.h"
@@ -19,9 +21,15 @@ public:
     void setMaxText(int maxtext);
     QString getContent();
 
+    void mousePressEvent(QGraphicsSceneMouseEvent *event);
+
+signals:
+    void clicked();
+
 private:
     Cursor *cursor;
     AnimateText *text;
+    QGraphicsRectItem *rect;
     const QString font_family = "Joystix";
     int font_size;
     int textCount;

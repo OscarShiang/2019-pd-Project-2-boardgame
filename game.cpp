@@ -680,6 +680,11 @@ void Game::displayMenu() {
         delete radio;
     }
 
+    if (flip) {
+        flipBoard(false);
+        flip = false;
+    }
+
     playOnline = false;
 
     mode = Mode::Menu;

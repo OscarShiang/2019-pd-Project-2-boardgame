@@ -45,28 +45,12 @@ Radio::Radio() {
     ip->setPos(0, 0);
     port->setPos(0, 80);
 
-    // add input rect to the group
-    ipRect = new AnimateRect(320, 50);
-    ipRect->setPos(0, 30);
-    ipRect->setBrush(Qt::white);
-
-    portRect = new AnimateRect(320, 50);
-    portRect->setPos(0, 110);
-    portRect->setBrush(Qt::white);
-
-    // set the outline of the rects
-    QPen pen;
-    pen.setWidth(5);
-    pen.setColor(Qt::black);
-    ipRect->setPen(pen);
-    portRect->setPen(pen);
-
-    addToGroup(ipRect);
-    addToGroup(portRect);
-
     // create the textinput object
     ipInput = new TextInput(320, 50, 25);
     portInput = new TextInput(120, 50, 25);
+
+    connect(ipInput, SIGNAL(clicked()), this, SLOT(showIpInput()));
+    connect(portInput, SIGNAL(clicked()), this, SLOT(showPortInput()));
 
     ipInput->setPos(0, 33);
     portInput->setPos(0, 113);
@@ -82,14 +66,10 @@ Radio::Radio() {
 
     point = ipInput;
 
-    connect(ipRect, SIGNAL(clicked()), this, SLOT(showIpInput()));
-    connect(portRect, SIGNAL(clicked()), this, SLOT(showPortInput()));
-
     ok->hide();
     ipInput->hide();
     portInput->hide();
-    ipRect->hide();
-    portRect->hide();
+
     ip->hide();
     port->hide();
 }
@@ -115,8 +95,6 @@ void Radio::startConnect() {
 
         ipInput->hide();
         portInput->hide();
-        ipRect->hide();
-        portRect->hide();
         ok->hide();
     }
 
@@ -199,8 +177,8 @@ void Radio::setServer() {
     ok->hide();
     ipInput->hide();
     portInput->hide();
-    ipRect->hide();
-    portRect->hide();
+//    ipRect->hide();
+//    portRect->hide();
     create->hide();
     join->hide();
     ip->show();
@@ -224,8 +202,8 @@ void Radio::setClient() {
     ok->show();
     ipInput->show();
     portInput->show();
-    ipRect->show();
-    portRect->show();
+//    ipRect->show();
+//    portRect->show();
     ip->show();
     port->show();
     create->hide();
@@ -242,16 +220,4 @@ QString Radio::getRole() {
 
 QString Radio::getData() {
     return data;
-}
-
-Radio::~Radio() {
-    delete server;
-    delete socket;
-    delete receiver;
-    delete checkConnect;
-    delete ok;
-    delete create;
-    delete join;
-    delete back;
-    delete ipInput;
 }
