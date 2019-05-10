@@ -55,6 +55,7 @@ Game::Game() {
     connect(this, SIGNAL(checkMate()), this, SLOT(gameOver()));
 
     makeBoard();
+    flip = false;
 
     // show the view window
     show();
@@ -228,9 +229,25 @@ void Game::moveChess(QPoint init, QPoint final) {
     anime->setKind(board[final.x()][final.y()]);
     tile[init.x()][init.y()]->setKind(board[init.x()][init.y()]);
 
-    animation->setStartValue(QPointF(10 + init.y() * 70 + 70 / 2, 10 + init.x() * 70 + 70 / 2 - 5) - anime->getPicSize() / 2);
+    if (!flip) {
+        if (turn == "") {
+            animation->setStartValue(QPointF(10 + init.y() * 70 + 70 / 2, 10 + init.x() * 70 + 70 / 2) - anime->getPicSize() / 2);
+        }
+        else {
+            animation->setStartValue(QPointF(10 + init.y() * 70 + 70 / 2, 10 + init.x() * 70 + 70 / 2 - 5) - anime->getPicSize() / 2);
+        }
+        animation->setEndValue(QPointF(10 + final.y() * 70 + 70 / 2, 10 + final.x() * 70 + 70 / 2) - anime->getPicSize() / 2);
+    }
+    else {
+        if (turn == "") {
+            animation->setStartValue(QPointF(10 + (7 - init.y()) * 70 + 70 / 2, 10 + (7 - init.x()) * 70 + 70 / 2) - anime->getPicSize() / 2);
+        }
+        else {
+            animation->setStartValue(QPointF(10 + (7 - init.y()) * 70 + 70 / 2, 10 + (7 - init.x()) * 70 + 70 / 2 - 5) - anime->getPicSize() / 2);
+        }
+        animation->setEndValue(QPointF(10 + (7 - final.y()) * 70 + 70 / 2, 10 + (7 - final.x()) * 70 + 70 / 2) - anime->getPicSize() / 2);
+    }
     animation->setDuration(300);
-    animation->setEndValue(QPointF(10 + final.y() * 70 + 70 / 2, 10 + final.x() * 70 + 70 / 2) - anime->getPicSize() / 2);
 
     QEventLoop loop; // to stop the execute
     connect(animation, SIGNAL(finished()), &loop, SLOT(quit()));
@@ -254,6 +271,8 @@ void Game::moveChess(QPoint init, QPoint final) {
             board[final.x()][final.y() + 1] = "";
             tile[final.x()][final.y() - 1]->setKind(board[final.x()][final.y() - 1]);
             tile[final.x()][final.y() + 1]->setKind(board[final.x()][final.y() + 1]);
+            if (playOnline)
+                radio->sendMessage(QString("[%1][%2]->[%3][%4]").arg(final.x()).arg(final.y() - 1).arg(final.x()).arg(final.y() - 1));
         }
         // queenside castling
         else if (castlingList[0] != NONEXIST) {
@@ -262,6 +281,8 @@ void Game::moveChess(QPoint init, QPoint final) {
             board[final.x()][final.y() - 2] = "";
             tile[final.x()][final.y() + 1]->setKind(board[final.x()][final.y() + 1]);
             tile[final.x()][final.y() - 2]->setKind(board[final.x()][final.y() - 2]);
+            if (playOnline)
+                radio->sendMessage(QString("[%1][%2]->[%3][%4]").arg(final.x()).arg(final.y() - 2).arg(final.x()).arg(final.y() + 1));
         }
     }
 
@@ -324,7 +345,7 @@ void Game::canMove(QPoint target, QSet <QPoint> &possibleList) {
         castlingList = {NONEXIST, NONEXIST};
         if (target == QPoint((board[x][y][0] == "b" ? 0 : 7), 4)) {
             // king side castling
-            if (board[(board[x][y][0] == "b" ? 0 : 7)][6] == "" && tile[x][y]->firstMove && tile[(board[x][y][0] == "b" ? 0 : 7)][7]->firstMove) {
+            if (board[(board[x][y][0] == "b" ? 0 : 7)][6] == "" && board[(board[x][y][0] == "b" ? 0 : 7)][5] == "" && tile[x][y]->firstMove && tile[(board[x][y][0] == "b" ? 0 : 7)][7]->firstMove) {
                 if (board[x][y][0] == board[(board[x][y][0] == "b" ? 0 : 7)][7][0] && board[(board[x][y][0] == "b" ? 0 : 7)][7][1] == "r") {
                     possibleList += QPoint((board[x][y][0] == "b" ? 0 : 7), 6);
                     castlingList[1] = QPoint((board[x][y][0] == "b" ? 0 : 7), 6);
@@ -584,6 +605,11 @@ void Game::gameOver() {
         delete radio;
     }
 
+    if (flip) {
+        flipBoard(false);
+        flip = false;
+    }
+
     rect->setZValue(0);
 
     rect->fadeIn();
@@ -613,6 +639,9 @@ void Game::gameStart() {
     if (playOnline) {
         qDebug() << "online";
         radio->hide();
+        if (flip) {
+            flipBoard(true);
+        }
     }
 
     // create the board
@@ -841,6 +870,7 @@ void Game::logIn(QString ipt) {
     }
     else if (ipt == "client") {
         turn = "";
+        flip = true;
     }
     back->hide();
 }
@@ -850,4 +880,15 @@ void Game::analyseData(QString ipt) {
     sscanf(radio->getData().toStdString().c_str(), "[%d][%d]->[%d][%d]", &init_x, &init_y, &final_x, &final_y);
     moveChess(QPoint(init_x, init_y), QPoint(final_x, final_y));
     turn = ipt;
+}
+
+void Game::flipBoard(bool ipt) {
+    for (int i = 0; i < 8; i ++) {
+        for (int j = 0; j < 8; j ++) {
+            if (ipt)
+                tile[i][j]->setPos(10 + 70 * (7 - j), 10 + 70 * (7 - i));
+            else
+                tile[i][j]->setPos(10 + 70 * j, 10 + 70 * i);
+        }
+    }
 }

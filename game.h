@@ -30,6 +30,7 @@ public:
 
     // method for general playing
     void makeBoard();
+    void flipBoard(bool ipt);
     void putChess();
     void cleanBoard();
     void moveChess(QPoint init, QPoint final);
@@ -103,6 +104,7 @@ private:
     // for internet connection
     Radio *radio;
     bool playOnline;
+    bool flip;
 
     // for animation
     AnimatePixmap *anime;
